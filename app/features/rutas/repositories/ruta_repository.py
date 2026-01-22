@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import Optional, Sequence
+from datetime import datetime
 from sqlmodel import Session, select, or_
 from app.features.rutas.models.ruta import Ruta, RouteStatus
 from app.features.rutas.schemas.ruta_schemas import RutaCreate, RutaUpdate
@@ -55,6 +56,7 @@ class RutaRepository:
         ruta_data = ruta_update.model_dump(exclude_unset=True)
         for key, value in ruta_data.items():
             setattr(ruta, key, value)
+        ruta.updated_at = datetime.utcnow()
         self.session.add(ruta)
         self.session.commit()
         self.session.refresh(ruta)
@@ -66,6 +68,7 @@ class RutaRepository:
             ruta.started_at = datetime.utcnow()
         if status == RouteStatus.COMPLETADA and not ruta.completed_at:
             ruta.completed_at = datetime.utcnow()
+        ruta.updated_at = datetime.utcnow()
         self.session.add(ruta)
         self.session.commit()
         self.session.refresh(ruta)
