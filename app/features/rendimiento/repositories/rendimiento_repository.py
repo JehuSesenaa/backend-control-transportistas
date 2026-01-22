@@ -1,4 +1,5 @@
 from typing import Optional, Sequence
+from datetime import datetime
 from sqlmodel import Session, select
 from app.features.rendimiento.models.rendimiento import Rendimiento
 from app.features.rendimiento.schemas.rendimiento_schemas import RendimientoCreate, RendimientoUpdate
@@ -34,6 +35,7 @@ class RendimientoRepository:
         rendimiento_data = rendimiento_update.model_dump(exclude_unset=True)
         for key, value in rendimiento_data.items():
             setattr(rendimiento, key, value)
+        rendimiento.updated_at = datetime.utcnow()
         self.session.add(rendimiento)
         self.session.commit()
         self.session.refresh(rendimiento)

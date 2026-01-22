@@ -30,3 +30,4 @@ class RendimientoRead(RendimientoBase):
     notes: Optional[str]
     recorded_at: datetime
     created_at: datetime
+    updated_at: Optional[datetime]

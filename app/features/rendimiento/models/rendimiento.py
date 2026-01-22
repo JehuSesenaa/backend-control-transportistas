@@ -17,3 +17,4 @@ class Rendimiento(Base, table=True):
     notes: Optional[str] = Field(default=None, max_length=1000)
     recorded_at: datetime = Field(default_factory=datetime.utcnow)
     created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: Optional[datetime] = None
