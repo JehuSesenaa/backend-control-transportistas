@@ -11,7 +11,7 @@ app = FastAPI(title="Backend Control Transportistas", version="1.0.0")
 # Configurar CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:4200", "http://127.0.0.1:4200", "http://localhost:3000"],  # Puertos comunes de desarrollo
+    allow_origins=["http://localhost:4200", "http://127.0.0.1:4200", "http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
