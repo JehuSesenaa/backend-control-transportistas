@@ -8,7 +8,7 @@ from app.features.rendimiento.models.rendimiento import Rendimiento
 router = APIRouter(prefix="/performance", tags=["performance"])
 
 
-@router.post("/", response_model=RendimientoRead, status_code=201)
+@router.post("", response_model=RendimientoRead, status_code=201)
 def create_rendimiento(
     rendimiento_create: RendimientoCreate,
     service: RendimientoService = Depends(get_rendimiento_service)
@@ -16,10 +16,10 @@ def create_rendimiento(
     return service.create_rendimiento(rendimiento_create)
 
 
-@router.get("/", response_model=Sequence[RendimientoRead])
+@router.get("", response_model=Sequence[RendimientoRead])
 def get_rendimientos(
-    offset: int = Query(default=0, ge=0),
-    limit: int = Query(default=100, ge=1, le=100),
+    offset: int = Query(default=0, ge=0, description="Número de registros a saltar (paginación)"),
+    limit: int = Query(default=100, ge=1, le=100, description="Número máximo de registros a devolver"),
     service: RendimientoService = Depends(get_rendimiento_service)
 ) -> Sequence[Rendimiento]:
     return service.get_all_rendimientos(offset, limit)
@@ -32,7 +32,7 @@ def get_rendimiento(
 ) -> Rendimiento:
     rendimiento = service.get_rendimiento_by_id(rendimiento_id)
     if not rendimiento:
-        raise HTTPException(status_code=404, detail="Rendimiento not found")
+        raise HTTPException(status_code=404, detail="Rendimiento no encontrado")
     return rendimiento
 
 
@@ -43,7 +43,7 @@ def get_rendimiento_by_route(
 ) -> Rendimiento:
     rendimiento = service.get_rendimiento_by_route(route_id)
     if not rendimiento:
-        raise HTTPException(status_code=404, detail="Rendimiento not found for this route")
+        raise HTTPException(status_code=404, detail="Rendimiento no encontrado for this route")
     return rendimiento
 
 
@@ -55,7 +55,7 @@ def update_rendimiento(
 ) -> Rendimiento:
     rendimiento = service.update_rendimiento(rendimiento_id, rendimiento_update)
     if not rendimiento:
-        raise HTTPException(status_code=404, detail="Rendimiento not found")
+        raise HTTPException(status_code=404, detail="Rendimiento no encontrado")
     return rendimiento
 
 
