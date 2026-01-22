@@ -49,29 +49,29 @@ class RendimientoService:
     def create_rendimiento(self, rendimiento_create: RendimientoCreate) -> Rendimiento:
         ruta = self.ruta_repository.get_by_id(rendimiento_create.route_id)
         if not ruta:
-            raise HTTPException(status_code=404, detail="Ruta not found")
+            raise HTTPException(status_code=404, detail="Ruta no encontrada")
 
         if ruta.status != RouteStatus.COMPLETADA:
             raise HTTPException(
                 status_code=400, 
-                detail=f"Performance can only be recorded for completed routes. Current status: {ruta.status}"
+                detail=f"El rendimiento solo puede ser guardado para rutas completadas."
             )
 
         existing_rendimiento = self.repository.get_by_route_id(rendimiento_create.route_id)
         if existing_rendimiento:
             raise HTTPException(
                 status_code=400, 
-                detail="Performance record already exists for this route"
+                detail="Ya existe un registro de rendimiento para esta ruta"
             )
 
         if rendimiento_create.distance_traveled_km <= 0:
-            raise HTTPException(status_code=400, detail="Distance traveled must be greater than 0")
+            raise HTTPException(status_code=400, detail="La distancia recorrida debe ser mayor a 0")
 
         if rendimiento_create.fuel_consumed_liters <= 0:
-            raise HTTPException(status_code=400, detail="Fuel consumed must be greater than 0")
+            raise HTTPException(status_code=400, detail="El combustible consumido debe ser mayor a 0")
 
         if rendimiento_create.actual_time_hours <= 0:
-            raise HTTPException(status_code=400, detail="Actual time must be greater than 0")
+            raise HTTPException(status_code=400, detail="El tiempo actual debe ser mayor a 0")
 
         metrics = self._calculate_metrics(
             rendimiento_create.distance_traveled_km,
@@ -100,7 +100,7 @@ class RendimientoService:
     def get_rendimiento_by_route(self, route_id: int) -> Optional[Rendimiento]:
         ruta = self.ruta_repository.get_by_id(route_id)
         if not ruta:
-            raise HTTPException(status_code=404, detail="Ruta not found")
+            raise HTTPException(status_code=404, detail="Ruta no encontrada")
         return self.repository.get_by_route_id(route_id)
 
     def get_all_rendimientos(self, offset: int = 0, limit: int = 100) -> Sequence[Rendimiento]:
@@ -113,19 +113,19 @@ class RendimientoService:
     ) -> Optional[Rendimiento]:
         rendimiento = self.repository.get_by_id(rendimiento_id)
         if not rendimiento:
-            raise HTTPException(status_code=404, detail="Rendimiento not found")
+            raise HTTPException(status_code=404, detail="Rendimiento no encontrado")
 
         if rendimiento_update.distance_traveled_km is not None:
             if rendimiento_update.distance_traveled_km <= 0:
-                raise HTTPException(status_code=400, detail="Distance traveled must be greater than 0")
+                raise HTTPException(status_code=400, detail="La distancia recorrida debe ser mayor a 0")
 
         if rendimiento_update.fuel_consumed_liters is not None:
             if rendimiento_update.fuel_consumed_liters <= 0:
-                raise HTTPException(status_code=400, detail="Fuel consumed must be greater than 0")
+                raise HTTPException(status_code=400, detail="El combustible consumido debe ser mayor a 0")
 
         if rendimiento_update.actual_time_hours is not None:
             if rendimiento_update.actual_time_hours <= 0:
-                raise HTTPException(status_code=400, detail="Actual time must be greater than 0")
+                raise HTTPException(status_code=400, detail="El tiempo actual debe ser mayor a 0")
 
         update_data = rendimiento_update.model_dump(exclude_unset=True)
 
@@ -155,5 +155,5 @@ class RendimientoService:
     def delete_rendimiento(self, rendimiento_id: int) -> bool:
         rendimiento = self.repository.get_by_id(rendimiento_id)
         if not rendimiento:
-            raise HTTPException(status_code=404, detail="Rendimiento not found")
+            raise HTTPException(status_code=404, detail="Rendimiento no encontrado")
         return self.repository.delete(rendimiento)
