@@ -1,4 +1,5 @@
 from typing import Optional, Sequence
+from datetime import datetime
 from sqlmodel import Session, select
 from app.features.unidades.models.unidad import Unidad
 from app.features.unidades.schemas.unidad_schemas import UnidadCreate, UnidadUpdate
@@ -25,9 +26,9 @@ class UnidadRepository:
         result = self.session.exec(statement).first()
         return result
 
-    def get_by_user_id(self, user_id: int, offset: int = 0, limit: int = 100) -> Sequence[Unidad]:
-        statement = select(Unidad).where(Unidad.user_id == user_id).offset(offset).limit(limit)
-        result = self.session.exec(statement).all()
+    def get_by_user_id(self, user_id: int) -> Optional[Unidad]:
+        statement = select(Unidad).where(Unidad.user_id == user_id)
+        result = self.session.exec(statement).first()
         return result
 
     def get_all(self, offset: int = 0, limit: int = 100) -> Sequence[Unidad]:
@@ -39,6 +40,7 @@ class UnidadRepository:
         unidad_data = unidad_update.model_dump(exclude_unset=True)
         for key, value in unidad_data.items():
             setattr(unidad, key, value)
+        unidad.updated_at = datetime.utcnow()
         self.session.add(unidad)
         self.session.commit()
         self.session.refresh(unidad)

@@ -11,7 +11,7 @@ class Unidad(Base, table=True):
     model: str = Field(max_length=100)
     year: int = Field(index=True)
     capacity: float = Field(default=0.0)
-    user_id: int = Field(foreign_key="user.id", index=True)
+    user_id: int = Field(foreign_key="user.id", unique=True, index=True)
     is_active: bool = Field(default=True)
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: Optional[datetime] = None
